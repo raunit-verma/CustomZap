@@ -76,7 +76,7 @@ func (e *HideSensitiveFieldsEncoder) EncodeEntry(
 	fields []zapcore.Field,
 ) (*buffer.Buffer, error) {
 	for idx, field := range fields {
-		if field.Type == 23 {
+		if field.Type == 23 && field.Interface != nil {
 			value := reflect.ValueOf(field.Interface)
 			kind := value.Kind()
 			if kind == reflect.Struct {
@@ -123,9 +123,19 @@ func NewHttpClient() *http.Client {
 	return http.DefaultClient
 }
 
-func CustomZap(l *zap.SugaredLogger, a *GitRegistry, b *DockerArtifactStoreBean, c *GitHostRequest, d *Test) {
-
-	l.Infow("Info", "A :", a, "B :", b, "C :", c, "D :", d)
-	l.Warnw("Warning", "A :", a, "B :", b, "C :", c, "D :", d)
-	l.Errorw("Error", "A :", a, "B :", b, "C :", c, "D :", d)
+func getNil() *Test3 {
+	return nil
 }
+
+func CustomZap(l *zap.SugaredLogger, a *GitRegistry, b *DockerArtifactStoreBean, c *GitHostRequest, d *Test) {
+	l.Infow("Info", "A :", a, "B :", b, "C :", c, "D :", d, "E :", nil, "F: ", Test2{MyMap: nil, Test3: getNil()})
+	l.Warnw("Warning", "A :", a, "B :", b, "C :", c, "D :", d, "E :", nil)
+	l.Errorw("Error", "A :", a, "B :", b, "C :", c, "D :", d, "E :", nil)
+}
+
+// func main() {
+// 	l, _ := NewSugardLogger("custom")
+// 	a := GitRegistry{}
+// 	faker.FakeData(&a)
+// 	l.Infow("Error", "KEY", a)
+// }

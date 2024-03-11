@@ -52,7 +52,7 @@ type Test2 struct {
 	Password string `log:"hide"`
 	Check    int    `log:"true"`
 	Numbers  []int  `log:"false"`
-	Test3    Test3
+	Test3    *Test3
 	Username string `json:"username"`
 	FullName string `json:"fullname"`
 	Class    int    `json:"class"`
