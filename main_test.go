@@ -30,7 +30,7 @@ func BenchmarkCustomZap(t *testing.B) {
 	// 	fmt.Println(err)
 	// }
 
-	l, _ := NewSugardLogger("custom")
+	l, _ := NewSugardLogger("")
 	// fmt.Println(getNil())
 	// l.Infow("message ", "A is : ", Test2{MyMap: nil, Test3: getNil()})
 	t.ResetTimer()
