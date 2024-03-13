@@ -11,8 +11,6 @@ type ComprehensiveStruct struct {
 	Float64Value    float64        // Double-precision floating-point number
 	ByteValue       byte           // Single byte (unsigned integer)
 	RuneValue       rune           // Unicode character
-	Complex64Value  complex64      // Complex number (real and imaginary parts)
-	Complex128Value complex128     // Complex number (higher precision)
 	ArrayValue      [5]int         // Fixed-size array of integers
 	SliceValue      []string       // Dynamically sized slice of strings
 	MapValue        map[string]int // Key-value map (string keys, integer values)
@@ -21,19 +19,17 @@ type ComprehensiveStruct struct {
 
 // NestedStruct demonstrates all data types within a nested struct
 type NestedStruct struct {
-	NestedIntValue    int
-	NestedIntPointer  *int
+	NestedIntValue    int            `log:"hide"`
+	NestedIntPointer  *int           `log:"hide"`
 	NestedStringValue string         `log:"hide"`
-	BoolValue         bool           // Boolean (true or false)
-	Float32Value      float32        // Single-precision floating-point number
-	Float64Value      float64        // Double-precision floating-point number
-	ByteValue         byte           // Single byte (unsigned integer)
-	RuneValue         rune           // Unicode character
-	Complex64Value    complex64      // Complex number (real and imaginary parts)
-	Complex128Value   complex128     // Complex number (higher precision)
-	ArrayValue        [5]int         // Fixed-size array of integers
-	SliceValue        []string       // Dynamically sized slice of strings
-	MapValue          map[string]int // Key-value map (string keys, integer values)
+	BoolValue         bool           `log:"hide"` // Boolean (true or false)
+	Float32Value      float32        `log:"hide"` // Single-precision floating-point number
+	Float64Value      float64        `log:"hide"` // Double-precision floating-point number
+	ByteValue         byte           `log:"hide"` // Single byte (unsigned integer)
+	RuneValue         rune           `log:"hide"` // Unicode character
+	ArrayValue        [5]int         `log:"hide"` // Fixed-size array of integers
+	SliceValue        []string       `log:"hide"` // Dynamically sized slice of strings
+	MapValue          map[string]int `log:"hide"` // Key-value map (string keys, integer values)
 }
 
 type StructOne struct {
@@ -122,8 +118,8 @@ type Test3 struct {
 	Username string `json:"df" log:"hide"`
 	Password string `json:"password,omitempty" log:"hide"`
 	FullName string `json:"fullname"`
-	Class    int    `json:"class"`
-	Email    string `json:"email,omitempty"`
+	Class    int    `json:"class" log:"hide"`
+	Email    string `json:"email,omitempty" log:"hide"`
 	Role     string `json:"role"`
 	CheckInt int    `log:"hide"`
 }

@@ -32,11 +32,17 @@ func redactField(ref *reflect.Value, i int) {
 	refField := ref.Field(i)
 	newValue := reflect.New(refField.Type()).Elem()
 	fieldType := ref.Field(i).Type().Kind()
+	if fieldType != reflect.String {
+		fmt.Println(ref.Field(i), newValue)
+	}
 	switch fieldType {
 	case reflect.String:
 		newValue.SetString("[REDACTED]")
 	}
 	ref.Field(i).Set(newValue)
+	if fieldType != reflect.String {
+		fmt.Println(ref.Field(i), newValue)
+	}
 }
 
 func hideSensitiveData(v interface{}) interface{} {
