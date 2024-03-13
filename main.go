@@ -52,20 +52,23 @@ func hideSensitiveData(v interface{}) interface{} {
 	refType := ref.Type()
 	for i := 0; i < refType.NumField(); i++ {
 		tag := refType.Field(i).Tag.Get("log")
+		currField := ref.Field(i)
 		if tag == "hide" || tag == "false" {
-			if ref.Field(i).CanSet() {
+			if currField.CanSet() {
 				redactField(&ref, i)
 			}
 		}
-		fieldType := ref.Field(i).Type().Kind()
-		if fieldType == reflect.Struct {
-			hideSensitiveData(ref.Field(i).Addr().Interface())
-		} else if fieldType == reflect.Ptr && ref.Field(i).Elem().Kind() == reflect.Struct {
+		fieldType := currField.Type()
+		fieldKind := fieldType.Kind()
+
+		if fieldKind == reflect.Struct {
+			hideSensitiveData(currField.Addr().Interface())
+		} else if fieldKind == reflect.Ptr && currField.Elem().Kind() == reflect.Struct {
 			// making a copy so that original data do not get changed
-			newCopy := reflect.New(ref.Field(i).Type().Elem()).Elem()
-			newCopy.Set(ref.Field(i).Elem())
+			newCopy := reflect.New(fieldType.Elem()).Elem()
+			newCopy.Set(currField.Elem())
 			hideSensitiveData(newCopy.Addr().Interface())
-			ref.Field(i).Set(newCopy.Addr())
+			currField.Set(newCopy.Addr())
 		}
 	}
 	return ref.Interface()
@@ -76,12 +79,13 @@ func (e *HideSensitiveFieldsEncoder) EncodeEntry(
 	fields []zapcore.Field,
 ) (*buffer.Buffer, error) {
 	for idx, field := range fields {
-		if field.Type == 23 && field.Interface != nil {
-			value := reflect.ValueOf(field.Interface)
+		currInterface := field.Interface
+		if field.Type == 23 && currInterface != nil {
+			value := reflect.ValueOf(currInterface)
 			kind := value.Kind()
 			if kind == reflect.Struct {
-				fields[idx].Interface = hideSensitiveData(field.Interface)
-			} else if value.Elem().Kind() == reflect.Struct {
+				fields[idx].Interface = hideSensitiveData(currInterface)
+			} else if value.Elem().Kind() == reflect.Struct { // in case ptr is passed in the log
 				// passes only value so that original struct do not get changed
 				fields[idx].Interface = hideSensitiveData(value.Elem().Interface())
 			}
@@ -127,10 +131,10 @@ func getNil() *Test3 {
 	return nil
 }
 
-func CustomZap(l *zap.SugaredLogger, a *GitRegistry, b *DockerArtifactStoreBean, c *GitHostRequest, d *Test) {
-	l.Infow("Info", "A :", a, "B :", b, "C :", c, "D :", d, "E :", nil, "F: ", Test2{MyMap: nil, Test3: getNil()})
-	l.Warnw("Warning", "A :", a, "B :", b, "C :", c, "D :", d, "E :", nil)
-	l.Errorw("Error", "A :", a, "B :", b, "C :", c, "D :", d, "E :", nil)
+func CustomZap(l *zap.SugaredLogger, a *GitRegistry, b *DockerArtifactStoreBean, c *GitHostRequest, d *Test, e ComprehensiveStruct, f StructOne) {
+	l.Infow("Info", "A :", a, "B :", b, "C :", c, "D :", d, "E :", e, "F: ", f, "Test 2 :", Test2{MyMap: nil, Test3: getNil()})
+	// l.Warnw("Warning", "A :", a, "B :", b, "C :", c, "D :", d, "E :", nil)
+	// l.Errorw("Error", "A :", a, "B :", b, "C :", c, "D :", d, "E :", nil)
 }
 
 // func main() {

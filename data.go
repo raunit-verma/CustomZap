@@ -1,5 +1,59 @@
 package main
 
+const LOG = "log"
+
+type ComprehensiveStruct struct {
+	IntValue        int            // Basic integer
+	IntPointerValue *int           // Pointer to an integer
+	StringValue     string         `log:"hide"`
+	BoolValue       bool           // Boolean (true or false)
+	Float32Value    float32        // Single-precision floating-point number
+	Float64Value    float64        // Double-precision floating-point number
+	ByteValue       byte           // Single byte (unsigned integer)
+	RuneValue       rune           // Unicode character
+	Complex64Value  complex64      // Complex number (real and imaginary parts)
+	Complex128Value complex128     // Complex number (higher precision)
+	ArrayValue      [5]int         // Fixed-size array of integers
+	SliceValue      []string       // Dynamically sized slice of strings
+	MapValue        map[string]int // Key-value map (string keys, integer values)
+	StructPointer   *NestedStruct  // Pointer to a nested struct
+}
+
+// NestedStruct demonstrates all data types within a nested struct
+type NestedStruct struct {
+	NestedIntValue    int
+	NestedIntPointer  *int
+	NestedStringValue string         `log:"hide"`
+	BoolValue         bool           // Boolean (true or false)
+	Float32Value      float32        // Single-precision floating-point number
+	Float64Value      float64        // Double-precision floating-point number
+	ByteValue         byte           // Single byte (unsigned integer)
+	RuneValue         rune           // Unicode character
+	Complex64Value    complex64      // Complex number (real and imaginary parts)
+	Complex128Value   complex128     // Complex number (higher precision)
+	ArrayValue        [5]int         // Fixed-size array of integers
+	SliceValue        []string       // Dynamically sized slice of strings
+	MapValue          map[string]int // Key-value map (string keys, integer values)
+}
+
+type StructOne struct {
+	Integer      int
+	Float        float64
+	Bool         bool
+	String       string
+	IntegerPtr   *int
+	FloatPtr     *float64
+	BoolPtr      *bool
+	StringPtr    *string
+	NestedStruct StructTwo
+	ArrayOfInt   [3]int
+}
+
+type StructTwo struct {
+	AnotherInt   int
+	AnotherFloat float64
+	AnotherBool  bool
+}
 type GitRegistry struct {
 	Id            int            `json:"id,omitempty" validate:"number"`
 	Name          string         `json:"name,omitempty" validate:"required"`

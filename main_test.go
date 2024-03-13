@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"testing"
+
+	"github.com/bxcodec/faker/v4"
 )
 
 func BenchmarkCustomZap(t *testing.B) {
@@ -12,14 +15,19 @@ func BenchmarkCustomZap(t *testing.B) {
 	c := GitHostRequest{Id: 234, Name: "raunit is here", Active: true, WebhookUrl: "sdfjsdklfsdklfsdjlfjsdklfjsd", WebhookSecret: "slkdfsdlkfjsdklfjsdkfjkldsfj", EventTypeHeader: "klsdfjdlskfjdksfjksdjf", SecretHeader: "kdfjklfjdskfjskfj", SecretValidator: "kdfjdlksfjdsklfjksld", UserId: 324324}
 
 	d := Test{Username: "sdkfdjsklfdsjkfjsdkf", Password: "lksdfjlkdsafjdsklfjkldsfjklsfjkdslfj", FullName: "kldsfjlkdsfjkldsfjkdsjfklds", Class: 34, Email: "kldsdfjkldsfkldsfkld", Role: "lkdsfjkdfjksldjkls", CheckInt: 3432, Test2: &Test2{Check: 234, Numbers: []int{234, 324, 324, 32, 42, 3}, Username: "sdfjskfsdkfsd", Password: "sdklkfjdsklfdskf", FullName: "jdsflksdjkflsdjfkl", Class: 3432, Email: "kldsjfjkldjfkdsfjksd", Role: "lksdjfkllkfdsk", CheckInt: 32432, MyMap: &map[string]string{"kdsfjdsf": "fdsfsdafsdf", "dfdsaasdf": "dsfdfdsafsd"}, Test3: &Test3{Check: 234, Numbers: []int{234, 324, 324, 32, 42, 3}, Username: "sdfjskfsdkfsd", Password: "sdklkfjdsklfdskf", FullName: "jdsflksdjkflsdjfkl", Class: 3432, Email: "kldsjfjkldjfkdsfjksd", Role: "lksdjfkllkfdsk", CheckInt: 32432}}}
-	// err := faker.FakeData(&a)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// err = faker.FakeData(&b)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
+
+	e := ComprehensiveStruct{}
+	err := faker.FakeData(&e)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	f := StructOne{}
+
+	err = faker.FakeData(&f)
+	if err != nil {
+		fmt.Println(err)
+	}
 	// err = faker.FakeData(&c)
 	// if err != nil {
 	// 	fmt.Println(err)
@@ -30,13 +38,14 @@ func BenchmarkCustomZap(t *testing.B) {
 	// 	fmt.Println(err)
 	// }
 
-	l, _ := NewSugardLogger("")
+	l, _ := NewSugardLogger("custom")
 	// fmt.Println(getNil())
 	// l.Infow("message ", "A is : ", Test2{MyMap: nil, Test3: getNil()})
 	t.ResetTimer()
 
+	CustomZap(l, &a, &b, &c, &d, e, f)
 	for i := 0; i < t.N; i++ {
-		CustomZap(l, &a, &b, &c, &d)
 	}
+	// fmt.Println(a, b, c, d)
 
 }
