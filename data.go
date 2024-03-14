@@ -3,18 +3,18 @@ package main
 const LOG = "log"
 
 type ComprehensiveStruct struct {
-	IntValue        int            // Basic integer
-	IntPointerValue *int           // Pointer to an integer
-	StringValue     string         `log:"hide"`
-	BoolValue       bool           // Boolean (true or false)
-	Float32Value    float32        // Single-precision floating-point number
-	Float64Value    float64        // Double-precision floating-point number
-	ByteValue       byte           // Single byte (unsigned integer)
-	RuneValue       rune           // Unicode character
-	ArrayValue      [5]int         // Fixed-size array of integers
-	SliceValue      []string       // Dynamically sized slice of strings
-	MapValue        map[string]int // Key-value map (string keys, integer values)
-	StructPointer   *NestedStruct  // Pointer to a nested struct
+	IntValue        int     `log:"hide"` // Basic integer
+	IntPointerValue *int    `log:"hide"` // Pointer to an integer
+	StringValue     string  `log:"hide"`
+	BoolValue       bool    // Boolean (true or false)
+	Float32Value    float32 // Single-precision floating-point number
+	Float64Value    float64 // Double-precision floating-point number
+	ByteValue       byte    // Single byte (unsigned integer)
+	RuneValue       rune    // Unicode character
+	ArrayValue      [5]int  // Fixed-size array of integers
+	//SliceValue      []string       // Dynamically sized slice of strings
+	//MapValue      map[string]int // Key-value map (string keys, integer values)
+	StructPointer *NestedStruct // Pointer to a nested struct
 }
 
 // NestedStruct demonstrates all data types within a nested struct

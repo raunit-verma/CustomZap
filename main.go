@@ -32,27 +32,23 @@ func redactField(ref *reflect.Value, i int) {
 	refField := ref.Field(i)
 	newValue := reflect.New(refField.Type()).Elem()
 	fieldType := ref.Field(i).Type().Kind()
-	if fieldType != reflect.String {
-		fmt.Println(ref.Field(i), newValue)
-	}
 	switch fieldType {
 	case reflect.String:
 		newValue.SetString("[REDACTED]")
 	}
 	ref.Field(i).Set(newValue)
-	if fieldType != reflect.String {
-		fmt.Println(ref.Field(i), newValue)
-	}
 }
 
-func hideSensitiveData(v interface{}) interface{} {
-	if v == nil {
-		return nil
-	}
-	ptrRef := reflect.ValueOf(v)
+func hideSensitiveData(ptrRef reflect.Value) interface{} {
+	//if v == nil {
+	//	return nil
+	//}
+	//ptrRef := reflect.ValueOf(v)
 	if ptrRef.Kind() != reflect.Ptr {
+		v := ptrRef.Interface()
 		ptrRef = reflect.New(reflect.TypeOf(v))
 		ptrRef.Elem().Set(reflect.ValueOf(v))
+		fmt.Println("making a copy", ptrRef.Elem())
 	}
 	ref := ptrRef.Elem()
 	refType := ref.Type()
@@ -68,13 +64,14 @@ func hideSensitiveData(v interface{}) interface{} {
 		fieldKind := fieldType.Kind()
 
 		if fieldKind == reflect.Struct {
-			hideSensitiveData(currField.Addr().Interface())
+			hideSensitiveData(currField.Addr())
 		} else if fieldKind == reflect.Ptr && currField.Elem().Kind() == reflect.Struct {
 			// making a copy so that original data do not get changed
-			newCopy := reflect.New(fieldType.Elem()).Elem()
-			newCopy.Set(currField.Elem())
-			hideSensitiveData(newCopy.Addr().Interface())
-			currField.Set(newCopy.Addr())
+			//newCopy := reflect.New(fieldType.Elem()).Elem()
+			//newCopy.Set(currField.Elem())
+			//currField.Set()
+			hideSensitiveData(currField.Elem())
+			//currField.Set(newCopy.Addr())
 		}
 	}
 	return ref.Interface()
@@ -90,10 +87,10 @@ func (e *HideSensitiveFieldsEncoder) EncodeEntry(
 			value := reflect.ValueOf(currInterface)
 			kind := value.Kind()
 			if kind == reflect.Struct {
-				fields[idx].Interface = hideSensitiveData(currInterface)
+				fields[idx].Interface = hideSensitiveData(value)
 			} else if value.Elem().Kind() == reflect.Struct { // in case ptr is passed in the log
 				// passes only value so that original struct do not get changed
-				fields[idx].Interface = hideSensitiveData(value.Elem().Interface())
+				fields[idx].Interface = hideSensitiveData(value.Elem())
 			}
 		}
 	}
@@ -137,8 +134,13 @@ func getNil() *Test3 {
 	return nil
 }
 
-func CustomZap(l *zap.SugaredLogger, a *GitRegistry, b *DockerArtifactStoreBean, c *GitHostRequest, d *Test, e ComprehensiveStruct, f StructOne) {
-	l.Infow("Info", "A :", a, "B :", b, "C :", c, "D :", d, "E :", e, "F: ", f, "Test 2 :", Test2{MyMap: nil, Test3: getNil()})
+func CustomZap(l *zap.SugaredLogger, a GitRegistry, b *DockerArtifactStoreBean, c *GitHostRequest, d *Test, e *ComprehensiveStruct, f StructOne) {
+	//l.Infow("Info", "A :", a, "B :", b, "C :", c, "D :", d, "E :", e, "F: ", f, "Test 2 :", Test2{MyMap: nil, Test3: getNil()})
+	l.Infow("Info", "A : ", a)
+	l.Infow("Info", "E: ", e)
+	fmt.Println("A is : ", a)
+	fmt.Println("E is : ", e)
+	fmt.Println("Nested Struct in E is : ", (*e).StructPointer)
 	// l.Warnw("Warning", "A :", a, "B :", b, "C :", c, "D :", d, "E :", nil)
 	// l.Errorw("Error", "A :", a, "B :", b, "C :", c, "D :", d, "E :", nil)
 }

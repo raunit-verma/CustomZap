@@ -43,7 +43,7 @@ func BenchmarkCustomZap(t *testing.B) {
 	// l.Infow("message ", "A is : ", Test2{MyMap: nil, Test3: getNil()})
 	t.ResetTimer()
 
-	CustomZap(l, &a, &b, &c, &d, e, f)
+	CustomZap(l, a, &b, &c, &d, &e, f)
 	for i := 0; i < t.N; i++ {
 	}
 	// fmt.Println(a, b, c, d)
